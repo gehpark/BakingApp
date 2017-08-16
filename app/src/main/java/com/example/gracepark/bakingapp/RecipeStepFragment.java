@@ -62,7 +62,8 @@ public class RecipeStepFragment extends Fragment {
         ((TextView) mRootView.findViewById(R.id.step_text)).setText(mText);
         Button nextButton = ((Button) mRootView.findViewById(R.id.next_step_button));
         if (mShowNextButton) {
-            nextButton.setText(mNextButtonText);
+            String buttonText = getString(R.string.next_prepend).concat(mNextButtonText);
+            nextButton.setText(buttonText);
             nextButton.setOnClickListener(
                     new View.OnClickListener() {
                         @Override

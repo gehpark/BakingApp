@@ -13,6 +13,12 @@
         android:layout_margin="@dimen/default_mid_space"
         android:src="@drawable/cooking"/>
 
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+        android:id="@+id/player_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/default_mid_space"/>
+
     <TextView
         android:id="@+id/step_text"
         android:layout_width="match_parent"

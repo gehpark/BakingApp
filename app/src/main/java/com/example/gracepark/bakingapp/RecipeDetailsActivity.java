@@ -11,7 +11,8 @@ import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_NA
 import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_STEPS;
 
 /**
- * Created by gracepark on 8/12/17.
+ * Activity to hold details on recipe including short descriptions of steps and ingredients.
+ * Holds RecipeDetailsFragment in phone view.
  */
 
 public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDetailsFragment.OnStepClickListener {

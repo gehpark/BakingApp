@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by gracepark on 8/12/17.
+ * Adapter to hold and inflate each of the recipes available.
  */
 
 public class RecipeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -24,7 +24,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private Context mContext;
         private LayoutInflater mInflater;
         private final RecipeOnClickListener mListener;
-        List<Recipe> mRecipesList= Collections.emptyList();
+        private List<Recipe> mRecipesList = Collections.emptyList();
 
         public RecipeListAdapter(Context context, List<Recipe> data, RecipeOnClickListener recipeClickListener){
             this.mContext = context;
@@ -72,7 +72,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return mRecipesList.size();
         }
 
-        class RecipeViewHolder extends RecyclerView.ViewHolder {
+        private class RecipeViewHolder extends RecyclerView.ViewHolder {
 
             TextView recipeName;
             ImageView recipeImage;

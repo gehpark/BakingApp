@@ -19,9 +19,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Display the list of recipes that we have by title.
+ */
 public class RecipeListActivity extends AppCompatActivity {
 
-    private RecipeListAdapter mAdapter;
     private RecyclerView mRecyclerView;
 
     public static final String EXTRA_RECIPE_NAME = "extra_recipe_name";
@@ -79,13 +81,13 @@ public class RecipeListActivity extends AppCompatActivity {
                     recipeList.add(recipe);
                 }
 
-                mAdapter = new RecipeListAdapter(
+                RecipeListAdapter adapter = new RecipeListAdapter(
                         RecipeListActivity.this,
                         recipeList,
                         new RecipeClickListener());
-                mRecyclerView.setAdapter(mAdapter);
+                mRecyclerView.setAdapter(adapter);
 
-                mAdapter.setRecipeList(recipeList);
+                adapter.setRecipeList(recipeList);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

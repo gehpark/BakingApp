@@ -13,7 +13,7 @@ import static com.example.gracepark.bakingapp.RecipeDetailsActivity.EXTRA_KEY_SH
 import static com.example.gracepark.bakingapp.RecipeDetailsActivity.EXTRA_KEY_TEXT;
 
 /**
- * Created by gracepark on 8/12/17.
+ * Activity to hold information about each step of a recipe. Holds RecipeStepFragment in phone view.
  */
 
 public class RecipeStepActivity extends AppCompatActivity implements RecipeStepFragment.OnNextClickListener{
@@ -41,7 +41,6 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         mStepMediaList = bundle.getStringArrayList(EXTRA_KEY_MEDIA);
         mStepTextList = bundle.getStringArrayList(EXTRA_KEY_TEXT);
         mStepShortList = bundle.getStringArrayList(EXTRA_KEY_SHORT);
-
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         mStepFragment = new RecipeStepFragment();

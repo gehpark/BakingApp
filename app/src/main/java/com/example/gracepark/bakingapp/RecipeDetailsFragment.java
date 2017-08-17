@@ -1,7 +1,6 @@
 package com.example.gracepark.bakingapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,11 +18,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_INGREDIENTS;
-import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_STEPS;
-
 /**
- * Created by gracepark on 8/12/17.
+ * Fragment to hold recipe details including ingredients and brief outline of instructions.
  */
 
 public class RecipeDetailsFragment extends Fragment {

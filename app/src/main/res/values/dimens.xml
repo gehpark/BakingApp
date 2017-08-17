@@ -5,5 +5,5 @@
     <dimen name="default_small_space">10dp</dimen>
     <dimen name="default_mid_space">20dp</dimen>
     <dimen name="default_large_space">40dp</dimen>
-    <dimen name="video_placeholder_height">160dp</dimen>
+    <dimen name="video_placeholder_height">180dp</dimen>
 </resources>

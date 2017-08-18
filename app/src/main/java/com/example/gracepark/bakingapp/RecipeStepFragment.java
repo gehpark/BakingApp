@@ -88,24 +88,32 @@ public class RecipeStepFragment extends Fragment {
             playerView.setVisibility(View.VISIBLE);
             placeholderMediaView.setVisibility(View.GONE);
         } else {
+            mExoPlayer.stop();
             playerView.setVisibility(View.GONE);
             placeholderMediaView.setVisibility(View.VISIBLE);
         }
-        ((TextView) mRootView.findViewById(R.id.step_text)).setText(mText);
+
+        TextView text = ((TextView) mRootView.findViewById(R.id.step_text));
+        if (text!= null) {
+            text.setText(mText);
+        }
+
         Button nextButton = ((Button) mRootView.findViewById(R.id.next_step_button));
-        if (mShowNextButton) {
-            String buttonText = getString(R.string.next_prepend).concat(mNextButtonText);
-            nextButton.setText(buttonText);
-            nextButton.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mCallback.onNextClicked();
+        if (nextButton != null) {
+            if (mShowNextButton && mNextButtonText != null) {
+                String buttonText = getString(R.string.next_prepend).concat(mNextButtonText);
+                nextButton.setText(buttonText);
+                nextButton.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mCallback.onNextClicked();
+                            }
                         }
-                    }
-            );
-        } else {
-            nextButton.setVisibility(GONE);
+                );
+            } else {
+                nextButton.setVisibility(GONE);
+            }
         }
     }
 

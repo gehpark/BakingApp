@@ -1,11 +1,12 @@
 package com.example.gracepark.bakingapp;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.gracepark.bakingapp.data.Recipe;
@@ -36,7 +37,12 @@ public class RecipeListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_list);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.list);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(RecipeListActivity.this));
+        if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(RecipeListActivity.this, 1));
+        } else {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(RecipeListActivity.this, 3));
+
+        }
 
 
         new RecipeFetchTask().execute();

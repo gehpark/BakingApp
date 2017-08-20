@@ -15,6 +15,9 @@ import com.squareup.picasso.Picasso;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Adapter to hold and inflate each of the recipes available.
  */
@@ -72,17 +75,15 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return mRecipesList.size();
         }
 
-        private class RecipeViewHolder extends RecyclerView.ViewHolder {
+        public class RecipeViewHolder extends RecyclerView.ViewHolder {
 
-            TextView recipeName;
-            ImageView recipeImage;
-            LinearLayout recipe;
+            @BindView(R.id.recipe_name) TextView recipeName;
+            @BindView(R.id.recipe_image)ImageView recipeImage;
+            @BindView(R.id.recipe) LinearLayout recipe;
 
             public RecipeViewHolder(View itemView) {
                 super(itemView);
-                recipeImage= (ImageView) itemView.findViewById(R.id.recipe_image);
-                recipeName = (TextView) itemView.findViewById(R.id.recipe_name);
-                recipe = (LinearLayout) itemView.findViewById(R.id.recipe);
+                ButterKnife.bind(this, itemView);
             }
         }
 

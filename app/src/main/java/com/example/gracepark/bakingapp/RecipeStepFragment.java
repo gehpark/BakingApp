@@ -23,6 +23,9 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.view.View.GONE;
 
 /**
@@ -49,6 +52,11 @@ public class RecipeStepFragment extends Fragment {
 
     OnNextClickListener mCallback;
     private SimpleExoPlayer mExoPlayer;
+
+    @BindView(R.id.player_view) SimpleExoPlayerView playerView;
+    @BindView(R.id.step_media) View placeholderMediaView;
+    @BindView(R.id.step_text) TextView stepText;
+    @BindView(R.id.next_step_button) Button nextButton;
 
     public RecipeStepFragment() {}
 
@@ -80,6 +88,7 @@ public class RecipeStepFragment extends Fragment {
             mUserAgent  = savedInstanceState.getString(STATE_USER_AGENT);
             mShowNextButton = savedInstanceState.getBoolean(STATE_SHOW_NEXT);
         }
+        ButterKnife.bind(this, mRootView);
         setViews();
         return mRootView;
     }
@@ -100,8 +109,6 @@ public class RecipeStepFragment extends Fragment {
     public void setViews() {
         if (mRootView == null) { return; }
 
-        SimpleExoPlayerView playerView = (SimpleExoPlayerView) mRootView.findViewById(R.id.player_view);
-        View placeholderMediaView = mRootView.findViewById(R.id.step_media);
         if (mMedia != null && !mMedia.isEmpty()) {
             if (mExoPlayer == null) {
                 TrackSelector trackSelector = new DefaultTrackSelector();
@@ -127,12 +134,10 @@ public class RecipeStepFragment extends Fragment {
             placeholderMediaView.setVisibility(View.VISIBLE);
         }
 
-        TextView text = ((TextView) mRootView.findViewById(R.id.step_text));
-        if (text!= null) {
-            text.setText(mText);
+        if (stepText!= null) {
+            stepText.setText(mText);
         }
 
-        Button nextButton = ((Button) mRootView.findViewById(R.id.next_step_button));
         if (nextButton != null) {
             if (mShowNextButton && mNextButtonText != null) {
                 String buttonText = getString(R.string.next_prepend).concat(mNextButtonText);

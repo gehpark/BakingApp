@@ -43,11 +43,14 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         mStepShortList = bundle.getStringArrayList(EXTRA_KEY_SHORT);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        mStepFragment = new RecipeStepFragment();
-        setFragmentDetails();
-        fragmentManager.beginTransaction()
-                .add(R.id.recipe_step, mStepFragment)
-                .commit();
+        if (fragmentManager.findFragmentById(R.id.recipe_step) == null ){
+            mStepFragment = new RecipeStepFragment();
+            setFragmentDetails();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.recipe_step, mStepFragment)
+                    .commit();
+        }
+
     }
 
     private void setFragmentDetails() {

@@ -31,6 +31,13 @@ import static android.view.View.GONE;
 
 public class RecipeStepFragment extends Fragment {
 
+    private static final String STATE_PLAYER_POSITION = "state_player_position";
+    private static final String STATE_MEDIA = "state_media";
+    private static final String STATE_TEXT = "state_text";
+    private static final String STATE_NEXT_BUTTON = "state_next_button";
+    private static final String STATE_USER_AGENT = "state_user_agent";
+    private static final String STATE_SHOW_NEXT = "state_show_next";
+
     private LayoutInflater mInflater;
     private String mMedia;
     private String mText;
@@ -38,6 +45,7 @@ public class RecipeStepFragment extends Fragment {
     private String mUserAgent;
     private boolean mShowNextButton = true;
     private View mRootView;
+    private Long mSeekToPosition;
 
     OnNextClickListener mCallback;
     private SimpleExoPlayer mExoPlayer;
@@ -64,31 +72,57 @@ public class RecipeStepFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mInflater = inflater;
         mRootView = mInflater.inflate(R.layout.fragment_recipe_step, container, false);
+        if (savedInstanceState != null) {
+            mSeekToPosition = savedInstanceState.getLong(STATE_PLAYER_POSITION);
+            mMedia = savedInstanceState.getString(STATE_MEDIA);
+            mText  = savedInstanceState.getString(STATE_TEXT);
+            mNextButtonText  = savedInstanceState.getString(STATE_NEXT_BUTTON);
+            mUserAgent  = savedInstanceState.getString(STATE_USER_AGENT);
+            mShowNextButton = savedInstanceState.getBoolean(STATE_SHOW_NEXT);
+        }
         setViews();
         return mRootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mExoPlayer != null) {
+            outState.putLong(STATE_PLAYER_POSITION, mExoPlayer.getCurrentPosition());
+        }
+        outState.putString(STATE_MEDIA, mMedia);
+        outState.putString(STATE_TEXT, mText);
+        outState.putString(STATE_NEXT_BUTTON, mNextButtonText);
+        outState.putString(STATE_USER_AGENT, mUserAgent);
+        outState.putBoolean(STATE_SHOW_NEXT, mShowNextButton);
+        super.onSaveInstanceState(outState);
     }
 
     public void setViews() {
         if (mRootView == null) { return; }
 
         SimpleExoPlayerView playerView = (SimpleExoPlayerView) mRootView.findViewById(R.id.player_view);
-        if (mExoPlayer == null) {
-            TrackSelector trackSelector = new DefaultTrackSelector();
-            LoadControl loadControl = new DefaultLoadControl();
-            mUserAgent = Util.getUserAgent(getActivity().getApplicationContext(), "RecipeStepFragment");
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity().getApplicationContext(), trackSelector, loadControl);
-            playerView.setPlayer(mExoPlayer);
-            mExoPlayer.setPlayWhenReady(true);
-
-        }
-
         View placeholderMediaView = mRootView.findViewById(R.id.step_media);
         if (mMedia != null && !mMedia.isEmpty()) {
+            if (mExoPlayer == null) {
+                TrackSelector trackSelector = new DefaultTrackSelector();
+                LoadControl loadControl = new DefaultLoadControl();
+                mUserAgent = Util.getUserAgent(getActivity().getApplicationContext(), "RecipeStepFragment");
+                mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity().getApplicationContext(), trackSelector, loadControl);
+                playerView.setPlayer(mExoPlayer);
+                if (mSeekToPosition != null) {
+                    mExoPlayer.seekTo(mSeekToPosition);
+                    mSeekToPosition = null;
+                }
+                mExoPlayer.setPlayWhenReady(true);
+            }
+
             initializePlayer(Uri.parse(mMedia));
             playerView.setVisibility(View.VISIBLE);
             placeholderMediaView.setVisibility(View.GONE);
         } else {
-            mExoPlayer.stop();
+            if (mExoPlayer != null) {
+                mExoPlayer.stop();
+            }
             playerView.setVisibility(View.GONE);
             placeholderMediaView.setVisibility(View.VISIBLE);
         }
@@ -142,8 +176,10 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
+        if (mExoPlayer != null){
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
     }
 }

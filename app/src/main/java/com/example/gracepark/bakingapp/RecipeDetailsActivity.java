@@ -44,13 +44,35 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
         Intent intent = getIntent();
         setTitle(intent.getStringExtra(EXTRA_RECIPE_NAME));
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
         mDetailsFragment = new RecipeDetailsFragment();
-        ArrayList<String> ingredientList = new ArrayList<>();
-        ingredientList.add(getString(R.string.ingredients));
+        mDetailsFragment.setIngredientsList(
+                getRecipeIngredients(intent.getStringExtra(EXTRA_RECIPE_INGREDIENTS)));
+        mDetailsFragment.setShortStepsList(
+                getRecipeStepInfo(intent.getStringExtra(EXTRA_RECIPE_STEPS)));
 
-        int ingredientsCount = 0;
+        fragmentManager.beginTransaction()
+                .replace(R.id.recipe_details, mDetailsFragment)
+                .commit();
+
+        if (findViewById(R.id.recipe_step) != null
+                && fragmentManager.findFragmentById(R.id.recipe_step) == null) {
+            mTwoPane = true;
+            mStepFragment = new RecipeStepFragment();
+            mStepFragment.hideNextButton();
+            setStepFragmentDetails(0);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.recipe_step, mStepFragment)
+                    .commit();
+        } else
+            mTwoPane = false;
+    }
+
+    private ArrayList<String> getRecipeIngredients(String recipeIngredients) {
+        ArrayList<String> ingredientList = new ArrayList<>();
+
         try {
-            JSONArray ingredientJsonArray = new JSONArray(intent.getStringExtra(EXTRA_RECIPE_INGREDIENTS));
+            JSONArray ingredientJsonArray = new JSONArray(recipeIngredients);
             for (int i = 0; i < ingredientJsonArray.length(); i++) {
                 JSONObject ingredients_data = ingredientJsonArray.getJSONObject(i);
 
@@ -63,10 +85,16 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
                         + ingredients_data.getString("ingredient");
                 ingredientList.add(ingredient);
             }
-            ingredientsCount = ingredientList.size();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return ingredientList;
+    }
 
-            JSONArray stepsJsonArray = new JSONArray(intent.getStringExtra(EXTRA_RECIPE_STEPS));
-            for(int i = 0; i < stepsJsonArray.length(); i++) {
+    private ArrayList<String> getRecipeStepInfo(String recipeStepInfo) {
+        try {
+            JSONArray stepsJsonArray = new JSONArray(recipeStepInfo);
+            for (int i = 0; i < stepsJsonArray.length(); i++) {
                 JSONObject steps_data = stepsJsonArray.getJSONObject(i);
                 mStepTextList.add(steps_data.getString("description"));
                 mStepMediaList.add(steps_data.getString("videoURL").isEmpty() ?
@@ -77,27 +105,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        ingredientList.add(getString(R.string.steps));
-        ingredientList.addAll(mStepShortDescriptionsList);
-        mDetailsFragment.setIngredientsList(ingredientList);
-        mDetailsFragment.setIngredientsCount(ingredientsCount);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.recipe_details, mDetailsFragment)
-                .commit();
-
-        if (findViewById(R.id.recipe_step) != null) {
-            mTwoPane = true;
-            mStepFragment = new RecipeStepFragment();
-            mStepFragment.hideNextButton();
-            setStepFragmentDetails(0);
-            fragmentManager.beginTransaction()
-                    .add(R.id.recipe_step, mStepFragment)
-                    .commit();
-        } else
-            mTwoPane = false;
+        return mStepShortDescriptionsList;
     }
 
     private void setStepFragmentDetails(int position) {

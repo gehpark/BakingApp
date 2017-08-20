@@ -3,6 +3,7 @@ package com.example.gracepark.bakingapp;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
+import android.os.PersistableBundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,6 +32,8 @@ public class RecipeListActivity extends AppCompatActivity {
     public static final String EXTRA_RECIPE_INGREDIENTS = "extra_recipe_ingredients";
     public static final String EXTRA_RECIPE_STEPS = "extra_recipe_steps";
 
+    public static final String STATE_POSITION = "state_position";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,15 +44,18 @@ public class RecipeListActivity extends AppCompatActivity {
             mRecyclerView.setLayoutManager(new GridLayoutManager(RecipeListActivity.this, 1));
         } else {
             mRecyclerView.setLayoutManager(new GridLayoutManager(RecipeListActivity.this, 3));
-
         }
-
-
         new RecipeFetchTask().execute();
+
+        if (savedInstanceState != null) {
+            mRecyclerView.smoothScrollToPosition((int) savedInstanceState.get(STATE_POSITION));
+        }
     }
 
-    private void showSnackbar(String message) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(STATE_POSITION, mRecyclerView.getVerticalScrollbarPosition());
+        super.onSaveInstanceState(outState);
     }
 
     private class RecipeFetchTask extends AsyncTask<String, String, String> {

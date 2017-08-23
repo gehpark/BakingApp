@@ -2,32 +2,28 @@ package com.example.gracepark.bakingapp;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.AsyncTask;
-import android.os.PersistableBundle;
-import android.support.design.widget.Snackbar;
+import android.database.Cursor;
+import android.net.Uri;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.example.gracepark.bakingapp.data.Recipe;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import static com.example.gracepark.bakingapp.provider.RecipeContract.BASE_CONTENT_URI;
+import static com.example.gracepark.bakingapp.provider.RecipeContract.PATH_RECIPES;
 
 /**
  * Display the list of recipes that we have by title.
  */
-public class RecipeListActivity extends AppCompatActivity {
+public class RecipeListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerView mRecyclerView;
+    private RecipeListAdapter mRecipeListAdapter;
 
+    public static final String EXTRA_RECIPE_ID = "extra_recipe_id";
     public static final String EXTRA_RECIPE_NAME = "extra_recipe_name";
     public static final String EXTRA_RECIPE_INGREDIENTS = "extra_recipe_ingredients";
     public static final String EXTRA_RECIPE_STEPS = "extra_recipe_steps";
@@ -45,8 +41,16 @@ public class RecipeListActivity extends AppCompatActivity {
         } else {
             mRecyclerView.setLayoutManager(new GridLayoutManager(RecipeListActivity.this, 3));
         }
-        new RecipeFetchTask().execute();
 
+        mRecipeListAdapter = new RecipeListAdapter(
+                RecipeListActivity.this,
+                null,
+                new RecipeClickListener());
+
+        getSupportLoaderManager().initLoader(9876, null, this);
+
+
+        mRecyclerView.setAdapter(mRecipeListAdapter);
         if (savedInstanceState != null) {
             mRecyclerView.smoothScrollToPosition((int) savedInstanceState.get(STATE_POSITION));
         }
@@ -58,61 +62,28 @@ public class RecipeListActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-    private class RecipeFetchTask extends AsyncTask<String, String, String> {
-        @Override
-        protected String doInBackground(String... params) {
-
-            try {
-                InputStream is = getAssets().open("recipes.json");
-                int size = is.available();
-                byte[] buffer = new byte[size];
-                is.read(buffer);
-                is.close();
-                return new String(buffer, "UTF-8");
-            } catch (IOException e) {
-                e.printStackTrace();
-                return e.toString();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            List<Recipe> recipeList = new ArrayList<>();
-
-            try {
-                JSONArray jsonArray = new JSONArray(result);
-                for(int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject json_data = jsonArray.getJSONObject(i);
-                    Recipe recipe = new Recipe();
-                    recipe.image = json_data.getString("image");
-                    recipe.name = json_data.getString("name");
-                    recipe.ingredientsList = json_data.getString("ingredients");
-                    recipe.stepsList = json_data.getString("steps");
-
-                    recipeList.add(recipe);
-                }
-
-                RecipeListAdapter adapter = new RecipeListAdapter(
-                        RecipeListActivity.this,
-                        recipeList,
-                        new RecipeClickListener());
-                mRecyclerView.setAdapter(adapter);
-
-                adapter.setRecipeList(recipeList);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri PLANT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_RECIPES).build();
+        return new CursorLoader(this, PLANT_URI, null, null, null, null);
     }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        cursor.moveToFirst();
+        mRecipeListAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {}
 
     private class RecipeClickListener implements RecipeListAdapter.RecipeOnClickListener {
         @Override
-        public void onRecipeClick(Recipe recipe) {
+        public void onRecipeClick(int position, String name, String ingredients, String steps) {
             Intent intent = new Intent(RecipeListActivity.this, RecipeDetailsActivity.class);
-            intent.putExtra(EXTRA_RECIPE_NAME, recipe.name);
-            intent.putExtra(EXTRA_RECIPE_INGREDIENTS, recipe.ingredientsList);
-            intent.putExtra(EXTRA_RECIPE_STEPS, recipe.stepsList);
+            intent.putExtra(EXTRA_RECIPE_NAME, name);
+            intent.putExtra(EXTRA_RECIPE_INGREDIENTS, ingredients);
+            intent.putExtra(EXTRA_RECIPE_STEPS, steps);
             startActivity(intent);
         }
     }

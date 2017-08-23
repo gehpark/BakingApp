@@ -1,10 +1,13 @@
 package com.example.gracepark.bakingapp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +15,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_ID;
 import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_INGREDIENTS;
 import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_NAME;
 import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_STEPS;
@@ -21,7 +25,7 @@ import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_ST
  * Holds RecipeDetailsFragment in phone view.
  */
 
-public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDetailsFragment.OnStepClickListener, RecipeStepFragment.OnNextClickListener {
+public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDetailsFragment.OnStepClickListener, RecipeStepFragment.OnNextClickListener  {
 
     public final static String EXTRA_KEY_POSITION = "key_step_position";
     public final static String EXTRA_KEY_MEDIA = "key_step_media";
@@ -85,6 +89,15 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
                         + ingredients_data.getString("ingredient");
                 ingredientList.add(ingredient);
             }
+
+            Intent intent = new Intent(RecipeWidgetProvider.ACTION_INGREDIENTS);
+            intent.putExtra("extra_ingredients", ingredientList);
+            getApplicationContext().sendBroadcast(intent);
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

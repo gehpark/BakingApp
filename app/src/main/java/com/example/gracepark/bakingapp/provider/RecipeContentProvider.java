@@ -11,8 +11,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-import com.example.gracepark.bakingapp.data.Recipe;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

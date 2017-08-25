@@ -49,7 +49,6 @@ public class RecipeListActivity extends AppCompatActivity implements LoaderManag
 
         getSupportLoaderManager().initLoader(9876, null, this);
 
-
         mRecyclerView.setAdapter(mRecipeListAdapter);
         if (savedInstanceState != null) {
             mRecyclerView.smoothScrollToPosition((int) savedInstanceState.get(STATE_POSITION));

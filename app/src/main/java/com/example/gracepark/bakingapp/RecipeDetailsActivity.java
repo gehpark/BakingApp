@@ -52,6 +52,8 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         mDetailsFragment = new RecipeDetailsFragment();
+
+        // TODO make it such that we only need the recipe id and query from details page instead
         mDetailsFragment.setIngredientsList(
                 getRecipeIngredients(intent.getStringExtra(EXTRA_RECIPE_INGREDIENTS)));
         mDetailsFragment.setShortStepsList(

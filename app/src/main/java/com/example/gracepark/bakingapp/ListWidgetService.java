@@ -49,12 +49,6 @@ class ListRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
         return mIngredients.size();
     }
 
-    /**
-     * This method acts like the onBindViewHolder method in an Adapter
-     *
-     * @param position The current position of the item in the GridView to be displayed
-     * @return The RemoteViews object to display for the provided position
-     */
     @Override
     public RemoteViews getViewAt(int position) {
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.recipe_widget_row);
@@ -70,7 +64,7 @@ class ListRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getViewTypeCount() {
-        return 1; // Treat all items in the GridView the same
+        return 1;
     }
 
     @Override

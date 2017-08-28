@@ -80,6 +80,7 @@ public class RecipeListActivity extends AppCompatActivity implements LoaderManag
         @Override
         public void onRecipeClick(int position, String name, String ingredients, String steps) {
             Intent intent = new Intent(RecipeListActivity.this, RecipeDetailsActivity.class);
+            intent.putExtra(EXTRA_RECIPE_ID, position);
             intent.putExtra(EXTRA_RECIPE_NAME, name);
             intent.putExtra(EXTRA_RECIPE_INGREDIENTS, ingredients);
             intent.putExtra(EXTRA_RECIPE_STEPS, steps);

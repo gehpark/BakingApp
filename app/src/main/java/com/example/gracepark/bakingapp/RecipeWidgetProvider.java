@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
+import java.util.ArrayList;
+
 import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_INGREDIENTS;
 import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_NAME;
 import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_STEPS;
@@ -18,18 +20,25 @@ import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_ST
 public class RecipeWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+                                int appWidgetId, String name, String ingredients, String steps) {
+
+
 
         Intent intent = new Intent(context, RecipeDetailsActivity.class);
         Bundle extras = new Bundle();
-        extras.putString(EXTRA_RECIPE_NAME, "Recipe name");
-        extras.putString(EXTRA_RECIPE_INGREDIENTS, "[]");
-        extras.putString(EXTRA_RECIPE_STEPS, "[]");
+        extras.putString(EXTRA_RECIPE_NAME, name);
+        extras.putString(EXTRA_RECIPE_INGREDIENTS, ingredients);
+        extras.putString(EXTRA_RECIPE_STEPS, steps);
         intent.putExtras(extras);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
         views.setOnClickPendingIntent(R.id.widget_layout, pendingIntent);
+
+        Intent serviceIntent = new Intent(context, ListWidgetService.class);
+        serviceIntent.putExtra(EXTRA_RECIPE_INGREDIENTS, ingredients);
+        views.setRemoteAdapter(R.id.widget_list, serviceIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -37,10 +46,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
+        // We update manually when we open a details page.
     }
 
     @Override

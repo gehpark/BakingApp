@@ -20,6 +20,7 @@ import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_ID
 import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_INGREDIENTS;
 import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_NAME;
 import static com.example.gracepark.bakingapp.RecipeListActivity.EXTRA_RECIPE_STEPS;
+import static com.example.gracepark.bakingapp.UpdateWidgetService.NO_RECIPE_CHOSEN_ID;
 
 /**
  * Activity to hold details on recipe including short descriptions of steps and ingredients.
@@ -56,9 +57,13 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
         mDetailsFragment.setShortStepsList(
                 getRecipeStepInfo(intent.getStringExtra(EXTRA_RECIPE_STEPS)));
 
+        UpdateWidgetService.startActionUpdate(this, intent.getIntExtra(EXTRA_RECIPE_ID, NO_RECIPE_CHOSEN_ID));
+
         fragmentManager.beginTransaction()
                 .replace(R.id.recipe_details, mDetailsFragment)
                 .commit();
+
+
 
         if (findViewById(R.id.recipe_step) != null
                 && fragmentManager.findFragmentById(R.id.recipe_step) == null) {
@@ -73,7 +78,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
             mTwoPane = false;
     }
 
-    private ArrayList<String> getRecipeIngredients(String recipeIngredients) {
+    public static ArrayList<String> getRecipeIngredients(String recipeIngredients) {
         ArrayList<String> ingredientList = new ArrayList<>();
 
         try {

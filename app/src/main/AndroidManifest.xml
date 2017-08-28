@@ -25,7 +25,8 @@
             android:name=".provider.RecipeContentProvider"
             android:authorities="com.example.gracepark.bakingapp"
             android:exported="true" />
-
+        <service android:name=".ListWidgetService"/>
+        <service android:name=".UpdateWidgetService"/>
         <receiver android:name=".RecipeWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

@@ -55,8 +55,6 @@ public class RecipeStepFragment extends Fragment {
 
     @BindView(R.id.player_view) SimpleExoPlayerView playerView;
     @BindView(R.id.step_media) View placeholderMediaView;
-    @BindView(R.id.step_text) TextView stepText;
-    @BindView(R.id.next_step_button) Button nextButton;
 
     public RecipeStepFragment() {}
 
@@ -83,10 +81,16 @@ public class RecipeStepFragment extends Fragment {
         if (savedInstanceState != null) {
             mSeekToPosition = savedInstanceState.getLong(STATE_PLAYER_POSITION);
             mMedia = savedInstanceState.getString(STATE_MEDIA);
+            mShowNextButton = savedInstanceState.getBoolean(STATE_SHOW_NEXT);
             mText  = savedInstanceState.getString(STATE_TEXT);
             mNextButtonText  = savedInstanceState.getString(STATE_NEXT_BUTTON);
             mUserAgent  = savedInstanceState.getString(STATE_USER_AGENT);
-            mShowNextButton = savedInstanceState.getBoolean(STATE_SHOW_NEXT);
+            if (mRootView.findViewById(R.id.step_text) != null) {
+                ((TextView) mRootView.findViewById(R.id.step_text)).setText(mText);
+            }
+            if (mRootView.findViewById(R.id.next_step_button) != null) {
+                ((Button) mRootView.findViewById(R.id.next_step_button)).setText(mNextButtonText);
+            }
         }
         ButterKnife.bind(this, mRootView);
         setViews();
@@ -134,11 +138,12 @@ public class RecipeStepFragment extends Fragment {
             placeholderMediaView.setVisibility(View.VISIBLE);
         }
 
-        if (stepText!= null) {
-            stepText.setText(mText);
+        if (mRootView.findViewById(R.id.step_text)!= null) {
+            ((TextView) mRootView.findViewById(R.id.step_text)).setText(mText);
         }
 
-        if (nextButton != null) {
+        if (mRootView.findViewById(R.id.next_step_button) != null) {
+            Button nextButton = (Button) mRootView.findViewById(R.id.next_step_button);
             if (mShowNextButton && mNextButtonText != null) {
                 String buttonText = getString(R.string.next_prepend).concat(mNextButtonText);
                 nextButton.setText(buttonText);

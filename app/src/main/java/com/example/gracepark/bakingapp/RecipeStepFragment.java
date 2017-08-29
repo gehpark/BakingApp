@@ -117,10 +117,7 @@ public class RecipeStepFragment extends Fragment {
     }
 
     private boolean isMediaVideo(String url) {
-        if (url.endsWith(".mp4")) {
-            return true;
-        }
-        return false;
+        return url.endsWith(".mp4");
     }
 
     public void setViews() {
@@ -208,6 +205,16 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mExoPlayer != null){
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         if (mExoPlayer != null){
             mExoPlayer.stop();
             mExoPlayer.release();

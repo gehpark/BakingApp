@@ -4,10 +4,12 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -22,6 +24,10 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -110,26 +116,42 @@ public class RecipeStepFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
+    private boolean isMediaVideo(String url) {
+        if (url.endsWith(".mp4")) {
+            return true;
+        }
+        return false;
+    }
+
     public void setViews() {
         if (mRootView == null) { return; }
 
         if (mMedia != null && !mMedia.isEmpty()) {
-            if (mExoPlayer == null) {
-                TrackSelector trackSelector = new DefaultTrackSelector();
-                LoadControl loadControl = new DefaultLoadControl();
-                mUserAgent = Util.getUserAgent(getActivity().getApplicationContext(), "RecipeStepFragment");
-                mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity().getApplicationContext(), trackSelector, loadControl);
-                playerView.setPlayer(mExoPlayer);
-                if (mSeekToPosition != null) {
-                    mExoPlayer.seekTo(mSeekToPosition);
-                    mSeekToPosition = null;
+            if (isMediaVideo(mMedia)) {
+                if (mExoPlayer == null) {
+                    TrackSelector trackSelector = new DefaultTrackSelector();
+                    LoadControl loadControl = new DefaultLoadControl();
+                    mUserAgent = Util.getUserAgent(getActivity().getApplicationContext(), "RecipeStepFragment");
+                    mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity().getApplicationContext(), trackSelector, loadControl);
+                    playerView.setPlayer(mExoPlayer);
+                    if (mSeekToPosition != null) {
+                        mExoPlayer.seekTo(mSeekToPosition);
+                        mSeekToPosition = null;
+                    }
+                    mExoPlayer.setPlayWhenReady(true);
                 }
-                mExoPlayer.setPlayWhenReady(true);
+
+                initializePlayer(Uri.parse(mMedia));
+                playerView.setVisibility(View.VISIBLE);
+                placeholderMediaView.setVisibility(View.GONE);
+            } else {
+                Picasso.with(getActivity().getApplicationContext())
+                        .load(mMedia)
+                        .placeholder(R.drawable.cooking)
+                        .error(R.drawable.cooking)
+                        .into((ImageView) mRootView.findViewById(R.id.step_media));
             }
 
-            initializePlayer(Uri.parse(mMedia));
-            playerView.setVisibility(View.VISIBLE);
-            placeholderMediaView.setVisibility(View.GONE);
         } else {
             if (mExoPlayer != null) {
                 mExoPlayer.stop();

@@ -18,9 +18,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RecipeDetailsActivity" />
-        <activity android:name=".RecipeStepActivity" />
-
+        <activity android:name=".RecipeDetailsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.gracepark.bakingapp.RecipeListActivity" />
+        </activity>
+        <activity android:name=".RecipeStepActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.gracepark.bakingapp.RecipeDetailsActivity" />
+        </activity>
         <provider
             android:name=".provider.RecipeContentProvider"
             android:authorities="com.example.gracepark.bakingapp"

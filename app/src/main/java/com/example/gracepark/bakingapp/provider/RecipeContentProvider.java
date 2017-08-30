@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class RecipeContentProvider extends ContentProvider {
@@ -83,6 +81,9 @@ public class RecipeContentProvider extends ContentProvider {
 
         @Override
         protected void onPostExecute(String result) {
+            if (result == null || result.isEmpty()) {
+                return;
+            }
             try {
                 JSONArray jsonArray = new JSONArray(result);
                 for(int i = 0; i < jsonArray.length(); i++) {

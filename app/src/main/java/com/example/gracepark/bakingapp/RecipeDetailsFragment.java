@@ -67,14 +67,14 @@ public class RecipeDetailsFragment extends Fragment {
         mListView.setAdapter(ingredientsAdapter);
 
         if (savedInstanceState != null) {
-            mListView.smoothScrollToPosition(savedInstanceState.getInt(STATE_POSITION));
+            mListView.onRestoreInstanceState(savedInstanceState.getParcelable(STATE_POSITION));
         }
         return rootView;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STATE_POSITION, mListView.getFirstVisiblePosition());
+        outState.putParcelable(STATE_POSITION, mListView.onSaveInstanceState());
         super.onSaveInstanceState(outState);
     }
 

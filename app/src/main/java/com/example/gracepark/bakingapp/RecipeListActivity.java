@@ -22,6 +22,7 @@ public class RecipeListActivity extends AppCompatActivity implements LoaderManag
 
     private RecyclerView mRecyclerView;
     private RecipeListAdapter mRecipeListAdapter;
+    private GridLayoutManager mGridLayoutManager;
 
     public static final String EXTRA_RECIPE_ID = "extra_recipe_id";
     public static final String EXTRA_RECIPE_NAME = "extra_recipe_name";
@@ -35,12 +36,15 @@ public class RecipeListActivity extends AppCompatActivity implements LoaderManag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
 
+
         mRecyclerView = (RecyclerView) findViewById(R.id.list);
         if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            mRecyclerView.setLayoutManager(new GridLayoutManager(RecipeListActivity.this, 1));
+            mGridLayoutManager = new GridLayoutManager(RecipeListActivity.this, 1);
         } else {
-            mRecyclerView.setLayoutManager(new GridLayoutManager(RecipeListActivity.this, 3));
+            mGridLayoutManager = new GridLayoutManager(RecipeListActivity.this, 3);
         }
+
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
 
         mRecipeListAdapter = new RecipeListAdapter(
                 RecipeListActivity.this,
@@ -49,15 +53,15 @@ public class RecipeListActivity extends AppCompatActivity implements LoaderManag
 
         getSupportLoaderManager().initLoader(9876, null, this);
 
-        mRecyclerView.setAdapter(mRecipeListAdapter);
         if (savedInstanceState != null) {
-            mRecyclerView.smoothScrollToPosition((int) savedInstanceState.get(STATE_POSITION));
+            mGridLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(STATE_POSITION));
         }
+        mRecyclerView.setAdapter(mRecipeListAdapter);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STATE_POSITION, mRecyclerView.getVerticalScrollbarPosition());
+        outState.putParcelable(STATE_POSITION, mGridLayoutManager.onSaveInstanceState());
         super.onSaveInstanceState(outState);
     }
 

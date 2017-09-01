@@ -3,6 +3,7 @@ package com.example.gracepark.bakingapp;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,11 +65,13 @@ public class RecipeDetailsFragment extends Fragment {
                     inflater,
                     mIngredientsList.size(),
                     mCallback);
+
         mListView.setAdapter(ingredientsAdapter);
 
         if (savedInstanceState != null) {
             mListView.onRestoreInstanceState(savedInstanceState.getParcelable(STATE_POSITION));
         }
+
         return rootView;
     }
 

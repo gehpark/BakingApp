@@ -41,8 +41,6 @@ public class ActivityRecipeDetailsTest {
     @Test
     public void clickStep_opensStepPage() {
         onView(withText("STEPTEXT")).perform(click());
-
         intended(hasComponent(RecipeStepActivity.class.getName()));
-
     }
 }

@@ -63,4 +63,9 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         }
         mStepFragment.setViews();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

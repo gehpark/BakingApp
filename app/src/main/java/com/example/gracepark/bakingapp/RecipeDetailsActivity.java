@@ -65,8 +65,6 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
                 .replace(R.id.recipe_details, mDetailsFragment)
                 .commit();
 
-
-
         if (findViewById(R.id.recipe_step) != null
                 && fragmentManager.findFragmentById(R.id.recipe_step) == null) {
             mTwoPane = true;

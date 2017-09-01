@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,8 @@ public class RecipeDetailsFragment extends Fragment {
     public ArrayList<String> mIngredientsList = new ArrayList<>();
     private ArrayList<String> mShortStepsList = new ArrayList<>();
     private OnStepClickListener mCallback;
-    private ListView mListView;
+    private RecyclerView mListView;
+    private LinearLayoutManager mLayoutManager;
 
     public RecipeDetailsFragment() {}
 
@@ -57,27 +59,30 @@ public class RecipeDetailsFragment extends Fragment {
         masterList.add(getString(R.string.steps));
         masterList.addAll(mShortStepsList);
 
-        mListView = (ListView) rootView.findViewById(R.id.details_list);
+        mListView = (RecyclerView) rootView.findViewById(R.id.details_list);
         RecipeDetailsAdapter ingredientsAdapter =
                 new RecipeDetailsAdapter(
-                    getActivity().getApplicationContext(),
                     masterList,
                     inflater,
                     mIngredientsList.size(),
                     mCallback);
 
+
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mListView.setLayoutManager(mLayoutManager);
+        if (savedInstanceState != null) {
+            mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(STATE_POSITION));
+        }
+
         mListView.setAdapter(ingredientsAdapter);
 
-        if (savedInstanceState != null) {
-            mListView.onRestoreInstanceState(savedInstanceState.getParcelable(STATE_POSITION));
-        }
 
         return rootView;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(STATE_POSITION, mListView.onSaveInstanceState());
+        outState.putParcelable(STATE_POSITION, mLayoutManager.onSaveInstanceState());
         super.onSaveInstanceState(outState);
     }
 

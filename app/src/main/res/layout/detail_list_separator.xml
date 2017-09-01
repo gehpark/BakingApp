@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detail_panel"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/text1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/gray"
@@ -12,3 +19,5 @@
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
     android:padding="@dimen/default_mid_space"
     tools:text="INGREDIENTS" />
+
+    </LinearLayout>

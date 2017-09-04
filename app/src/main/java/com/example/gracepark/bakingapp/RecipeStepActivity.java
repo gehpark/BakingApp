@@ -54,15 +54,6 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
 
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void setFragmentDetails() {
         mStepFragment.setMedia(mStepMediaList.get(mPosition));
         mStepFragment.setText(mStepTextList.get(mPosition));

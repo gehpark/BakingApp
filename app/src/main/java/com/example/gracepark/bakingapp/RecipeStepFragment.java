@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,7 +124,7 @@ public class RecipeStepFragment extends Fragment {
     public void setViews() {
         if (mRootView == null) { return; }
 
-        if (mMedia != null && !mMedia.isEmpty()) {
+        if (TextUtils.isEmpty(mMedia)) {
             if (isMediaVideo(mMedia)) {
                 if (mExoPlayer == null) {
                     TrackSelector trackSelector = new DefaultTrackSelector();

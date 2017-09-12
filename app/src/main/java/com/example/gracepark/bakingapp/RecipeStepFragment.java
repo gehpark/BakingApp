@@ -124,39 +124,7 @@ public class RecipeStepFragment extends Fragment {
     public void setViews() {
         if (mRootView == null) { return; }
 
-        if (!TextUtils.isEmpty(mMedia)) {
-            if (isMediaVideo(mMedia)) {
-                if (mExoPlayer == null) {
-                    TrackSelector trackSelector = new DefaultTrackSelector();
-                    LoadControl loadControl = new DefaultLoadControl();
-                    mUserAgent = Util.getUserAgent(getActivity().getApplicationContext(), "RecipeStepFragment");
-                    mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity().getApplicationContext(), trackSelector, loadControl);
-                    playerView.setPlayer(mExoPlayer);
-                    if (mSeekToPosition != null) {
-                        mExoPlayer.seekTo(mSeekToPosition);
-                        mSeekToPosition = null;
-                    }
-                    mExoPlayer.setPlayWhenReady(true);
-                }
-
-                initializePlayer(Uri.parse(mMedia));
-                playerView.setVisibility(View.VISIBLE);
-                placeholderMediaView.setVisibility(View.GONE);
-            } else {
-                Picasso.with(getActivity().getApplicationContext())
-                        .load(mMedia)
-                        .placeholder(R.drawable.cooking)
-                        .error(R.drawable.cooking)
-                        .into((ImageView) mRootView.findViewById(R.id.step_media));
-            }
-
-        } else {
-            if (mExoPlayer != null) {
-                mExoPlayer.stop();
-            }
-            playerView.setVisibility(View.GONE);
-            placeholderMediaView.setVisibility(View.VISIBLE);
-        }
+        initializePlayer(Uri.parse(mMedia));
 
         if (mRootView.findViewById(R.id.step_text)!= null) {
             ((TextView) mRootView.findViewById(R.id.step_text)).setText(mText);
@@ -198,9 +166,41 @@ public class RecipeStepFragment extends Fragment {
     }
 
     private void initializePlayer(Uri mediaUri) {
-        MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
-                getActivity().getApplicationContext(), mUserAgent), new DefaultExtractorsFactory(), null, null);
-        mExoPlayer.prepare(mediaSource);
+        if (!TextUtils.isEmpty(mMedia)) {
+            if (isMediaVideo(mMedia)) {
+                if (mExoPlayer == null) {
+                    TrackSelector trackSelector = new DefaultTrackSelector();
+                    LoadControl loadControl = new DefaultLoadControl();
+                    mUserAgent = Util.getUserAgent(getActivity().getApplicationContext(), "RecipeStepFragment");
+                    mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity().getApplicationContext(), trackSelector, loadControl);
+                    playerView.setPlayer(mExoPlayer);
+                    if (mSeekToPosition != null) {
+                        mExoPlayer.seekTo(mSeekToPosition);
+                        mSeekToPosition = null;
+                    }
+                    mExoPlayer.setPlayWhenReady(true);
+                }
+
+                MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
+                        getActivity().getApplicationContext(), mUserAgent), new DefaultExtractorsFactory(), null, null);
+                mExoPlayer.prepare(mediaSource);
+                playerView.setVisibility(View.VISIBLE);
+                placeholderMediaView.setVisibility(View.GONE);
+            } else {
+                Picasso.with(getActivity().getApplicationContext())
+                        .load(mMedia)
+                        .placeholder(R.drawable.cooking)
+                        .error(R.drawable.cooking)
+                        .into((ImageView) mRootView.findViewById(R.id.step_media));
+            }
+
+        } else {
+            if (mExoPlayer != null) {
+                mExoPlayer.stop();
+            }
+            playerView.setVisibility(View.GONE);
+            placeholderMediaView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -217,9 +217,19 @@ public class RecipeStepFragment extends Fragment {
     public void onPause() {
         super.onPause();
         if (mExoPlayer != null){
+            mSeekToPosition = mExoPlayer.getCurrentPosition();
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mExoPlayer == null) {
+            initializePlayer(Uri.parse(mMedia));
+            mSeekToPosition = null;
         }
     }
 }

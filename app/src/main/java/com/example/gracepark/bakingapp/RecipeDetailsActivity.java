@@ -34,6 +34,8 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
     public final static String EXTRA_KEY_TEXT = "key_step_text";
     public final static String EXTRA_KEY_SHORT = "key_step_short";
 
+    final static String TAG_FRAGMENT = "detail_fragment_tag";
+
     public ArrayList<String> mStepShortDescriptionsList = new ArrayList<>();
     public ArrayList<String> mStepTextList = new ArrayList<>();
     public ArrayList<String> mStepMediaList = new ArrayList<>();
@@ -50,20 +52,22 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
         Intent intent = getIntent();
         setTitle(intent.getStringExtra(EXTRA_RECIPE_NAME));
 
+        UpdateWidgetService.startActionUpdate(this, intent.getIntExtra(EXTRA_RECIPE_ID, NO_RECIPE_CHOSEN_ID));
         FragmentManager fragmentManager = getSupportFragmentManager();
-        mDetailsFragment = new RecipeDetailsFragment();
+        if (savedInstanceState != null) {
+            mDetailsFragment = (RecipeDetailsFragment) fragmentManager.findFragmentByTag(TAG_FRAGMENT);
+        } else {
+            mDetailsFragment = new RecipeDetailsFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.recipe_details, mDetailsFragment, TAG_FRAGMENT)
+                    .commit();
+        }
 
         // TODO make it such that we only need the recipe id and query from details page instead
         mDetailsFragment.setIngredientsList(
                 getRecipeIngredients(intent.getStringExtra(EXTRA_RECIPE_INGREDIENTS)));
         mDetailsFragment.setShortStepsList(
                 getRecipeStepInfo(intent.getStringExtra(EXTRA_RECIPE_STEPS)));
-
-        UpdateWidgetService.startActionUpdate(this, intent.getIntExtra(EXTRA_RECIPE_ID, NO_RECIPE_CHOSEN_ID));
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.recipe_details, mDetailsFragment)
-                .commit();
 
         if (findViewById(R.id.recipe_step) != null
                 && fragmentManager.findFragmentById(R.id.recipe_step) == null) {

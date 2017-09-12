@@ -11,23 +11,24 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RecipeListActivity">
+        <activity android:name=".RecipeListActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RecipeDetailsActivity">
+        <activity android:name=".RecipeDetailsActivity"
+            android:parentActivityName=".RecipeListActivity"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:launchMode="singleTop"
                 android:value="com.example.gracepark.bakingapp.RecipeListActivity" />
         </activity>
-        <activity android:name=".RecipeStepActivity">
+        <activity android:name=".RecipeStepActivity"
+            android:parentActivityName=".RecipeDetailsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:launchMode="singleTop"
                 android:value="com.example.gracepark.bakingapp.RecipeDetailsActivity" />
         </activity>
         <provider

@@ -124,7 +124,7 @@ public class RecipeStepFragment extends Fragment {
     public void setViews() {
         if (mRootView == null) { return; }
 
-        if (TextUtils.isEmpty(mMedia)) {
+        if (!TextUtils.isEmpty(mMedia)) {
             if (isMediaVideo(mMedia)) {
                 if (mExoPlayer == null) {
                     TrackSelector trackSelector = new DefaultTrackSelector();

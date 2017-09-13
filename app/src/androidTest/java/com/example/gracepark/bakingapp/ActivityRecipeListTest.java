@@ -25,9 +25,6 @@ public class ActivityRecipeListTest {
     @Rule
     public IntentsTestRule<RecipeListActivity> mIntentsTestRule = new IntentsTestRule<>(RecipeListActivity.class);
 
-    @Rule
-    public ActivityTestRule<RecipeListActivity> mActivityTestRule = new ActivityTestRule<>(RecipeListActivity.class);
-
     @Test
     public void clickRecipe_opensRecipeDetails() {
         onView(withId(R.id.list))

@@ -19,6 +19,8 @@ import static com.example.gracepark.bakingapp.RecipeDetailsActivity.EXTRA_KEY_TE
 
 public class RecipeStepActivity extends AppCompatActivity implements RecipeStepFragment.OnNextClickListener{
 
+    private static String STEP_FRAGMENT_TAG = "step_fragment_tag";
+
     private int mPosition;
     private ArrayList<String> mStepMediaList;
     private ArrayList<String> mStepTextList;
@@ -44,14 +46,17 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         mStepShortList = bundle.getStringArrayList(EXTRA_KEY_SHORT);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.findFragmentById(R.id.recipe_step) == null ){
+
+        if (savedInstanceState != null) {
+            mStepFragment = (RecipeStepFragment) fragmentManager.getFragment(savedInstanceState, STEP_FRAGMENT_TAG);
+        } else {
             mStepFragment = new RecipeStepFragment();
             setFragmentDetails();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.recipe_step, mStepFragment)
-                    .commit();
         }
 
+        fragmentManager.beginTransaction()
+                .replace(R.id.recipe_step, mStepFragment)
+                .commit();
     }
 
     private void setFragmentDetails() {
@@ -68,5 +73,11 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, STEP_FRAGMENT_TAG, mStepFragment);
     }
 }

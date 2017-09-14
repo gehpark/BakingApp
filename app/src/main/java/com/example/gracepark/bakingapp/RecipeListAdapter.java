@@ -49,6 +49,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final int ingredientsIndex = mCursor.getColumnIndex(RecipeEntry.COLUMN_INGREDIENTS);
         final int stepsIndex = mCursor.getColumnIndex(RecipeEntry.COLUMN_STEPS);
         final String name = mCursor.getString(nameIndex);
+        final String ingredients = mCursor.getString(ingredientsIndex);
+        final String steps = mCursor.getString(stepsIndex);
         String image = mCursor.getString(imageIndex);
 
         final RecipeViewHolder myHolder = (RecipeViewHolder) holder;
@@ -67,8 +69,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         mListener.onRecipeClick(
                                 mCursor.getPosition(),
                                 name,
-                                mCursor.getString(ingredientsIndex),
-                                mCursor.getString(stepsIndex));
+                                ingredients,
+                                steps);
                     }
                 }
         );
